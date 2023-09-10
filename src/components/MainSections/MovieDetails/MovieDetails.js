@@ -1,4 +1,6 @@
+import { useEffect } from "react";
 import StarRating from "./StarRating/StarRating";
+import placeholderPoster from "../../../assets/poster-placeholder.png";
 
 export default function MovieDetails({ fetchedMoviesDetail }) {
   console.log(
@@ -8,11 +10,16 @@ export default function MovieDetails({ fetchedMoviesDetail }) {
     Object.keys(fetchedMoviesDetail)
   );
   const p = fetchedMoviesDetail;
+
+  useEffect(() => {
+    document.title = p.Title || "useMovies";
+  }, [p.Title]);
+
   return (
     <>
       <div className="flex " style={{ backgroundColor: "rgb(85,82,82)" }}>
         <img
-          src={p.Poster}
+          src={p.Poster === "N/A" ? placeholderPoster : p.Poster}
           alt="movie poster"
           style={{ width: "20%", minWidth: "150px", height: "200px" }}
         />
