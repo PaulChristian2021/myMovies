@@ -1,4 +1,5 @@
-import placeholderPoster from "../../assets/poster-placeholder.png";
+import placeholderPoster from "../../../../assets/poster-placeholder.png";
+
 export default function Movie({ title, year, poster, selectMovieHandler, id }) {
   return (
     <li
