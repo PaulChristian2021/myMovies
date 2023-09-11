@@ -57,9 +57,13 @@ Best practices
 =========================
 
 myMovies:
-Search for movies
-see movie detail
+/Search for movies
+/see movie detail
 User's list of movies
+{
+imdbID, title, genre, plot, poster, releaseDate, actors, directors,
+dateAdded, userRating
+}
 -watched category
 -to watch category
 -add C
