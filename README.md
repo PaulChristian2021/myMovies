@@ -10,6 +10,7 @@
 
 display
 todo : revert title when not viewing movie
+todo: change page tab logo
 
 choices
 todo : results pages
