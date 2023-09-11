@@ -21,13 +21,18 @@ function App() {
   function titleInputHandler(e) {
     console.log("titleInputHandler", e);
     setTitle(e.target.value);
-    if (e.target.value.length > 1) searchMovies(e.target.value, year);
   }
   function yearInputHandler(e) {
     console.log("yearInputHandler", e);
     setYear(e.target.value);
-    if (e.target.value.length > 1 && title) searchMovies(title, e.target.value);
+    // if (e.target.value.length > 1 && title) searchMovies(title, e.target.value);
   }
+
+  useEffect(() => {
+    console.log("CALL API: Search Movies");
+    if (title.length > 1) searchMovies(title, year);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, year]);
 
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
@@ -170,7 +175,7 @@ function Header({ titleInputHandler, yearInputHandler }) {
             onChange={(e) => {
               setTimeout(() => {
                 titleInputHandler(e);
-              }, [500]);
+              }, [1000]);
             }}
             minLength={2}
           />
@@ -187,7 +192,7 @@ function Header({ titleInputHandler, yearInputHandler }) {
             onChange={(e) => {
               setTimeout(() => {
                 yearInputHandler(e);
-              }, [500]);
+              }, [1000]);
             }}
             minLength={2}
           />
