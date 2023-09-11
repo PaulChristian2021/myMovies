@@ -99,6 +99,12 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    // Sets the browser tab title
+    if (activeTab === "List") document.title = "myMovies";
+    else if (activeTab !== "List" && fetchedMoviesDetail.Title)
+      document.title = fetchedMoviesDetail.Title;
+  }, [activeTab, fetchedMoviesDetail.Title]);
 
   return (
     <div className="App darkBg p15px flex flexCol alignCenter">

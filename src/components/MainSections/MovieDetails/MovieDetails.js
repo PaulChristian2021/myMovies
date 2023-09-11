@@ -11,9 +11,9 @@ export default function MovieDetails({ fetchedMoviesDetail }) {
   );
   const p = fetchedMoviesDetail;
 
-  useEffect(() => {
-    document.title = p.Title || "myMovies";
-  }, [p.Title]);
+  // useEffect(() => {
+  //   document.title = p.Title || "myMovies";
+  // }, [p.Title]);
 
   return (
     <>
