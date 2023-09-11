@@ -26,11 +26,11 @@ todo: use react router
 
 todo: translations feasibility analysis
 
----======---
+=========================
 
 <!-- todo: change page tab logo -->
 
----======---
+=========================
 
 Redux
 
@@ -46,7 +46,24 @@ Reusable component
 
 <!-- Children props -->
 
-Error handling
+<!-- Error handling -->
+
+Error handling (Try catch, etc)
+
 Documentation
 Consistent design
 Best practices
+
+=========================
+
+myMovies:
+Search for movies
+see movie detail
+User's list of movies
+-watched category
+-to watch category
+-add C
+-update U
+-deletion D
+List of movies sorting
+List of movies search
