@@ -27,7 +27,8 @@ export default function StarRating() {
 function Star({ star, index, clickHandler }) {
   return (
     <span
-      style={{ fontSize: "25px", color: "yellow", userSelect: "none" }}
+      className="noSelect yellow"
+      style={{ fontSize: "25px" }}
       onClick={() => clickHandler(index)}
     >
       {star}
