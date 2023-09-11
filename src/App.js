@@ -107,9 +107,14 @@ function App() {
         yearInputHandler={yearInputHandler}
         fetchedMovies={fetchedMovies}
       />
-      {fetchedMovies && (
+      {fetchedMovies && activeTab === "Search" && (
         <div className="p15px_h" id="resultCount">
           Search results ({fetchedMovies.length})
+        </div>
+      )}
+      {activeTab === "List" && (
+        <div className="p15px_h" id="resultCount">
+          Your list ({fetchedMovies.length})
         </div>
       )}
       <Main>
