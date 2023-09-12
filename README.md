@@ -32,6 +32,8 @@ todo: reflect in the search's movie detail if a movie exist in user list (maybe 
 
 todo: update movie rating if listed
 
+todo: make the tabs stay on screen when scrolling down
+
 =========================
 
 <!-- todo: change page tab logo -->

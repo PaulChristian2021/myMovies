@@ -23,8 +23,6 @@ export default function MovieDetails({
   const [starRate, setStarRate] = useState(0);
 
   function addMovie() {
-    console.log("addMovie stars:", starRate);
-    console.log("addMovie movie:", p);
     addMovieHandler({ ...fetchedMoviesDetail, userRating: starRate });
   }
   function removeMovie() {
@@ -34,15 +32,7 @@ export default function MovieDetails({
   }
 
   useEffect(() => {
-    console.log(
-      "fetchedMoviesDetail.userRating 1",
-      fetchedMoviesDetail.userRating
-    );
-    if (fetchedMoviesDetail.userRating) {
-      console.log(
-        "fetchedMoviesDetail.userRating 2",
-        fetchedMoviesDetail.userRating
-      );
+    if (isMovieListed && fetchedMoviesDetail.userRating) {
       setStarRate(fetchedMoviesDetail.userRating);
     }
   }, [fetchedMoviesDetail.userRating]);

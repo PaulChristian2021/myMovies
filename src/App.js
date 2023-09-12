@@ -14,6 +14,7 @@ function App() {
   const [isMovieDetailLoading, setisMovieDetailLoading] = useState(false);
   const [fetchMoviesError, setfetchMoviesError] = useState("");
 
+  const [selectedMovieID, setSelectedMovieID] = useState();
   const [fetchedMoviesDetail, setfetchedMoviesDetail] = useState("");
   const [fetchedMoviesDetailError, setfetchedMoviesDetailError] = useState("");
 
@@ -21,6 +22,13 @@ function App() {
   const [year, setYear] = useState("");
 
   const [activeTab, setactiveTab] = useState("Search");
+
+  const isSelectedMovieIDListed = myMovies.some(
+    (m) => m.imdbID === selectedMovieID
+  );
+  const listedMovieDetail = myMovies.filter(
+    (m) => m.imdbID === selectedMovieID
+  )[0];
 
   function titleInputHandler(e) {
     console.log("titleInputHandler", e);
@@ -33,6 +41,7 @@ function App() {
 
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
+    setSelectedMovieID(imdbID);
     searchMovieDetail(imdbID);
   }
 
@@ -233,7 +242,11 @@ function App() {
             !fetchedMoviesDetailError &&
             fetchedMoviesDetail && (
               <MovieDetails
-                fetchedMoviesDetail={fetchedMoviesDetail}
+                fetchedMoviesDetail={
+                  isSelectedMovieIDListed
+                    ? listedMovieDetail
+                    : fetchedMoviesDetail
+                }
                 addMovieHandler={addMovieHandler}
                 removeMovieHandler={removeMovieHandler}
                 myMovies={myMovies}
