@@ -90,8 +90,26 @@ function App() {
 
   function addMovieHandler(movie) {
     // movie prop gotten from API + custom "userRating" from MovieDetails
-    console.log("addMovie", movie);
-    setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+    console.log("addMovieHandler", movie);
+    // prevents adding an already listed movie
+    if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
+      return;
+    } else {
+      setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+    }
+  }
+  function removeMovieHandler(movieImdbID) {
+    // movie prop gotten from API + custom "userRating" from MovieDetails
+    console.log("removeMovieHandler", movieImdbID);
+    // prevents adding an already listed movie
+    // if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
+    //   return;
+    // } else {
+    //   setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+    // }
+    const list = myMovies.filter((movie) => movie.imdbID !== movieImdbID);
+    console.log("movie-filtered list", list);
+    setmyMovies(list);
   }
 
   useEffect(() => {
@@ -217,6 +235,8 @@ function App() {
               <MovieDetails
                 fetchedMoviesDetail={fetchedMoviesDetail}
                 addMovieHandler={addMovieHandler}
+                removeMovieHandler={removeMovieHandler}
+                myMovies={myMovies}
               />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}

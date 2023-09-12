@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating/StarRating";
 import placeholderPoster from "../../../assets/poster-placeholder.png";
 
-export default function MovieDetails({ fetchedMoviesDetail, addMovieHandler }) {
+export default function MovieDetails({
+  fetchedMoviesDetail,
+  addMovieHandler,
+  removeMovieHandler,
+  myMovies,
+}) {
   console.log(
-    "props",
+    "MovieDetails props",
     fetchedMoviesDetail,
     fetchedMoviesDetail.Poster,
-    Object.keys(fetchedMoviesDetail)
+    Object.keys(fetchedMoviesDetail),
+    myMovies
   );
   const p = fetchedMoviesDetail;
+  const isMovieListed = myMovies.some(
+    (m) => m.imdbID === fetchedMoviesDetail.imdbID
+  );
 
   const [starRate, setStarRate] = useState(0);
 
@@ -18,6 +27,25 @@ export default function MovieDetails({ fetchedMoviesDetail, addMovieHandler }) {
     console.log("addMovie movie:", p);
     addMovieHandler({ ...fetchedMoviesDetail, userRating: starRate });
   }
+  function removeMovie() {
+    console.log("removeMovie movie:", p);
+    removeMovieHandler(fetchedMoviesDetail.imdbID);
+    setStarRate(0);
+  }
+
+  useEffect(() => {
+    console.log(
+      "fetchedMoviesDetail.userRating 1",
+      fetchedMoviesDetail.userRating
+    );
+    if (fetchedMoviesDetail.userRating) {
+      console.log(
+        "fetchedMoviesDetail.userRating 2",
+        fetchedMoviesDetail.userRating
+      );
+      setStarRate(fetchedMoviesDetail.userRating);
+    }
+  }, [fetchedMoviesDetail.userRating]);
 
   return (
     <>
@@ -47,12 +75,13 @@ export default function MovieDetails({ fetchedMoviesDetail, addMovieHandler }) {
           }}
         >
           <StarRating stars={starRate} setStars={setStarRate} />
+
           <button
-            className="pointer yellowBg white"
+            className={`pointer white ${isMovieListed ? "redBg" : "yellowBg"}`}
             style={{ borderRadius: "20px", padding: "5px", width: "80%" }}
-            onClick={addMovie}
+            onClick={isMovieListed ? removeMovie : addMovie}
           >
-            Add to list
+            {isMovieListed ? "Remove from list" : "Add to list"}
           </button>
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>

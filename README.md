@@ -8,6 +8,8 @@
 - dynamic site title (changes based on movie selected)
 - year input (Only calls API if there is a title)
 - shows a placeholder image for movie posters not available/missing
+- uses localStorage to store the user's movies list
+- CRUD operations
 
 display
 todo : revert title when not viewing movie
@@ -18,17 +20,23 @@ todo : results pages
 performance
 todo : separately call the poster
 
-todo: make the add-to-list functional
-
 todo: create user's movie list (watched, to watch, )
 
 todo: use react router
 
 todo: translations feasibility analysis
 
+todo: reflect user's rating of a movie
+
+todo: reflect in the search's movie detail if a movie exist in user list (maybe a tag or starRating)
+
+todo: update movie rating if listed
+
 =========================
 
 <!-- todo: change page tab logo -->
+<!-- todo: make the add-to-list functional -->
+<!-- todo: prevent duplicate item in list -->
 
 =========================
 
@@ -62,15 +70,15 @@ myMovies:
 /Search for movies
 /see movie detail
 User's list of movies
+/-localStorage user's movie list
 {
-imdbID, title, genre, plot, poster, releaseDate, actors, directors,
-dateAdded, userRating
+movie details from API, userRating
 }
 -watched category
 -to watch category
--add C
--update U
--deletion D
+/-add C: add movie
+/-update U: update movie rating
+/-deletion D: remove movie from list
 List of movies sorting
 List of movies search
 
