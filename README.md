@@ -26,19 +26,23 @@ todo: use react router
 
 todo: translations feasibility analysis
 
-todo: reflect user's rating of a movie
-
 todo: reflect in the search's movie detail if a movie exist in user list (maybe a tag or starRating)
+-currently shows red button for removal
 
 todo: update movie rating if listed
 
 todo: make the tabs stay on screen when scrolling down
+
+todo: dont call movie detail search api if movie to be selected is listed in localStorage
+
+todo: make some components reusable
 
 =========================
 
 <!-- todo: change page tab logo -->
 <!-- todo: make the add-to-list functional -->
 <!-- todo: prevent duplicate item in list -->
+<!-- todo: reflect user's rating of a movie -->
 
 =========================
 

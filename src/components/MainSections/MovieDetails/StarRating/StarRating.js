@@ -8,7 +8,7 @@ export default function StarRating({ stars, setStars }) {
   }
 
   return (
-    <div style={{ padding: "10px" }}>
+    <div style={{ padding: "10px", display: "flex", alignItems: "center" }}>
       {Array.from({ length: 10 }).map((_, i) => (
         <Star
           star={i < stars ? "★" : "☆"}
@@ -17,6 +17,10 @@ export default function StarRating({ stars, setStars }) {
           key={Math.random()}
         />
       ))}
+      <span style={{ marginLeft: "5px", fontWeight: "600", fontSize: "110%" }}>
+        {stars}
+        <span style={{ filter: "brightness(.7)" }}>/10</span>
+      </span>
     </div>
   );
 
@@ -27,8 +31,7 @@ export default function StarRating({ stars, setStars }) {
 function Star({ star, index, clickHandler }) {
   return (
     <span
-      className="noSelect yellow"
-      style={{ fontSize: "25px" }}
+      style={{ fontSize: "25px", userSelect: "none", color: "yellow" }}
       onClick={() => clickHandler(index)}
     >
       {star}
