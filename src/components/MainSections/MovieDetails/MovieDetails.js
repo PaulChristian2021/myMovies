@@ -75,13 +75,13 @@ export default function MovieDetails({
           </button>
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
-          {p.Plot}
+          Plot: {p.Plot}
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
-          Starring {p.Actors}
+          Starring: {p.Actors}
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
-          Directed by {p.Director}
+          Directed by: {p.Director}
         </div>
       </div>
     </>

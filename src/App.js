@@ -53,7 +53,7 @@ function App() {
     let data;
     try {
       const res = await fetch(
-        `http://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
+        `https://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
       );
       data = await res.json();
       console.log(data);
@@ -79,7 +79,7 @@ function App() {
     setfetchedMoviesDetailError("");
     setisMovieDetailLoading(true);
     const res = await fetch(
-      `http://www.omdbapi.com/?i=${imdbID}&apikey=44876fda&plot=full`
+      `https://www.omdbapi.com/?i=${imdbID}&apikey=44876fda&plot=full`
     );
     const data = await res.json();
     console.log(data);
