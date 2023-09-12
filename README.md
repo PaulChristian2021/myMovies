@@ -49,6 +49,8 @@ Reusable component
 <!-- Error handling -->
 
 Error handling (Try catch, etc)
+-saerchMovies/
+-searchMovie
 
 Documentation
 Consistent design
