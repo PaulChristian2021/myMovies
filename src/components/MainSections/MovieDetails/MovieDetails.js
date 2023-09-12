@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useState } from "react";
 import StarRating from "./StarRating/StarRating";
 import placeholderPoster from "../../../assets/poster-placeholder.png";
 
-export default function MovieDetails({ fetchedMoviesDetail }) {
+export default function MovieDetails({ fetchedMoviesDetail, addMovieHandler }) {
   console.log(
     "props",
     fetchedMoviesDetail,
@@ -11,9 +11,13 @@ export default function MovieDetails({ fetchedMoviesDetail }) {
   );
   const p = fetchedMoviesDetail;
 
-  // useEffect(() => {
-  //   document.title = p.Title || "myMovies";
-  // }, [p.Title]);
+  const [starRate, setStarRate] = useState(0);
+
+  function addMovie() {
+    console.log("addMovie stars:", starRate);
+    console.log("addMovie movie:", p);
+    addMovieHandler({ ...fetchedMoviesDetail, userRating: starRate });
+  }
 
   return (
     <>
@@ -42,10 +46,11 @@ export default function MovieDetails({ fetchedMoviesDetail }) {
             margin: "15px",
           }}
         >
-          <StarRating />
+          <StarRating stars={starRate} setStars={setStarRate} />
           <button
             className="pointer yellowBg white"
             style={{ borderRadius: "20px", padding: "5px", width: "80%" }}
+            onClick={addMovie}
           >
             Add to list
           </button>

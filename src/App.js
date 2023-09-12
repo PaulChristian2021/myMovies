@@ -31,12 +31,6 @@ function App() {
     setYear(e.target.value);
   }
 
-  useEffect(() => {
-    console.log("CALL API: Search Movies");
-    if (title.length > 1) searchMovies(title, year);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, year]);
-
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
     searchMovieDetail(imdbID);
@@ -62,10 +56,7 @@ function App() {
     } catch (error) {
       console.log("Error caught:");
       console.log(error);
-      // alert(error);
       setfetchMoviesError(`${error.name}: ${error.message}`);
-      // setisSearchLoading(false);
-      // return;
     }
 
     setisSearchLoading(false);
@@ -97,9 +88,15 @@ function App() {
     setactiveTab(tabName);
   }
 
+  function addMovieHandler(movie) {
+    // movie prop gotten from API + custom "userRating" from MovieDetails
+    console.log("addMovie", movie);
+    setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+  }
+
   useEffect(() => {
     console.log("load localStorage movies:", localStorage.getItem("myMovies"));
-    const myMovies = localStorage.getItem("myMovies");
+    const myMovies = JSON.parse(localStorage.getItem("myMovies"));
     setmyMovies(myMovies ? myMovies : []);
   }, []);
   useEffect(() => {
@@ -116,11 +113,19 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   useEffect(() => {
+    console.log("CALL API: Search Movies");
+    if (title.length > 1) searchMovies(title, year);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, year]);
+  useEffect(() => {
     // Sets the browser tab title
     if (activeTab === "List") document.title = "myMovies";
     else if (activeTab !== "List" && fetchedMoviesDetail.Title)
       document.title = fetchedMoviesDetail.Title;
   }, [activeTab, fetchedMoviesDetail.Title]);
+  useEffect(() => {
+    localStorage.setItem("myMovies", JSON.stringify(myMovies));
+  }, [myMovies]);
 
   return (
     <div className="App darkBg p15px flex flexCol alignCenter">
@@ -136,7 +141,7 @@ function App() {
       )}
       {activeTab === "List" && (
         <div className="p15px_h" id="resultCount">
-          Your list ({fetchedMovies.length})
+          Your list ({myMovies.length})
         </div>
       )}
       <Main>
@@ -209,7 +214,10 @@ function App() {
           {!isMovieDetailLoading &&
             !fetchedMoviesDetailError &&
             fetchedMoviesDetail && (
-              <MovieDetails fetchedMoviesDetail={fetchedMoviesDetail} />
+              <MovieDetails
+                fetchedMoviesDetail={fetchedMoviesDetail}
+                addMovieHandler={addMovieHandler}
+              />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}
         </SearchResults>
