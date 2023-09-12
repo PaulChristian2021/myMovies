@@ -35,7 +35,7 @@ export default function MovieDetails({
     if (isMovieListed && fetchedMoviesDetail.userRating) {
       setStarRate(fetchedMoviesDetail.userRating);
     }
-  }, [fetchedMoviesDetail.userRating]);
+  }, [isMovieListed, fetchedMoviesDetail.userRating]);
 
   return (
     <>

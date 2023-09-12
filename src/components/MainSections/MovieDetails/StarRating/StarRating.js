@@ -1,8 +1,4 @@
-import { useState } from "react";
-
 export default function StarRating({ stars, setStars }) {
-  // const [stars, setStars] = useState(0);
-
   function clickHandler(index) {
     setStars(index + 1);
   }
