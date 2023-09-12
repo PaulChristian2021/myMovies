@@ -1,5 +1,5 @@
 <h1>myMovies</h1>
-<b>Link: <a href="https://mymovies-dev.netlify.app/"></b>
+<b><a href="https://mymovies-dev.netlify.app/">Click here to view a deployment in Netlify</a></b>
 <p>Note that this app is under development</p>
 <p>A sample application utilizing the React JS library, the omDB(Open movie database) API, localStorage, [more coming soon]</p>
 
