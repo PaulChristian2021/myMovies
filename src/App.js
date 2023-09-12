@@ -9,6 +9,7 @@ import Tabs from "./components/MainSections/SearchResults/Tabs/Tabs";
 
 function App() {
   const [fetchedMovies, setFetchedMovies] = useState([]);
+  const [myMovies, setmyMovies] = useState([]);
   const [isSearchLoading, setisSearchLoading] = useState(false);
   const [isMovieDetailLoading, setisMovieDetailLoading] = useState(false);
   const [fetchMoviesError, setfetchMoviesError] = useState("");
@@ -46,15 +47,25 @@ function App() {
     setfetchMoviesError("");
     setFetchedMovies([]);
     setisSearchLoading(true);
-    const res = await fetch(
-      `http://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
-    );
-    const data = await res.json();
-    console.log(data);
-    if (data.Response === "True") {
-      setFetchedMovies(data.Search);
-    } else {
-      setfetchMoviesError(data.Error);
+    let data;
+    try {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
+      );
+      data = await res.json();
+      console.log(data);
+      if (data.Response === "True") {
+        setFetchedMovies(data.Search);
+      } else {
+        setfetchMoviesError(data.Error);
+      }
+    } catch (error) {
+      console.log("Error caught:");
+      console.log(error);
+      // alert(error);
+      setfetchMoviesError(`${error.name}: ${error.message}`);
+      // setisSearchLoading(false);
+      // return;
     }
 
     setisSearchLoading(false);
@@ -86,6 +97,11 @@ function App() {
     setactiveTab(tabName);
   }
 
+  useEffect(() => {
+    console.log("load localStorage movies:", localStorage.getItem("myMovies"));
+    const myMovies = localStorage.getItem("myMovies");
+    setmyMovies(myMovies ? myMovies : []);
+  }, []);
   useEffect(() => {
     // uses lastSearched__ texts for initial onload movies. If no movie result from lastSearched__, uses "movie" and current year as query
     const lastSearchedTitle = localStorage.getItem("lastSearchedTitle");
@@ -154,7 +170,29 @@ function App() {
               </ul>
             </>
           )}
-          {activeTab === "List" && "List"}
+          {activeTab === "List" && (
+            <>
+              {/* {isSearchLoading && <Loader />} */}
+              <ul className="flex flexCol p15px">
+                {myMovies &&
+                  myMovies.length > 0 &&
+                  myMovies.map((m) => (
+                    <Movie
+                      title={m.Title}
+                      year={m.Year}
+                      key={m.imdbID}
+                      poster={m.Poster}
+                      selectMovieHandler={selectMovieHandler}
+                      id={m.imdbID}
+                    />
+                  ))}
+
+                {myMovies &&
+                  myMovies.length < 1 &&
+                  'Start adding movies to your list by click the "Add to list" on a movie you searched for.'}
+              </ul>
+            </>
+          )}
         </SearchResults>
         <SearchResults backgroundColor={"rgb(70, 67, 62)"}>
           {isMovieDetailLoading && <Loader />}
