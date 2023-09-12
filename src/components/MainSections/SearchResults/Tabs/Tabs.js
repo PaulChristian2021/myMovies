@@ -5,7 +5,6 @@ export default function Tabs({
   tabsClassName,
   activeTab,
 }) {
-  //   const tabs = ["Search", "List"];
   const style = { filter: "invert(1)" };
   return (
     <ul className={className} style={{ display: "flex" }}>

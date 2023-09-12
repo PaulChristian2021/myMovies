@@ -172,7 +172,7 @@ function App() {
         </div>
       )}
       <Main>
-        <SearchResults backgroundColor={"rgb(70, 67, 67)"}>
+        <div style={{ maxHeight: "80vh", height: "80vh", width: "50%" }}>
           <Tabs
             className=" yellowBg noSelect "
             tabsClassName="yellowBg pointer p15px white"
@@ -180,53 +180,70 @@ function App() {
             clickHandler={tabsClickHandler}
             activeTab={activeTab}
           />
-          {activeTab === "Search" && (
-            <>
-              {isSearchLoading && <Loader />}
-              <ul className="flex flexCol p15px">
-                {!fetchMoviesError &&
-                  !isSearchLoading &&
-                  fetchedMovies.length > 0 &&
-                  fetchedMovies.map((m) => (
-                    <Movie
-                      title={m.Title}
-                      year={m.Year}
-                      key={m.imdbID}
-                      poster={m.Poster}
-                      selectMovieHandler={selectMovieHandler}
-                      id={m.imdbID}
-                    />
-                  ))}
+          <SearchResults
+            backgroundColor={"rgb(70, 67, 67)"}
+            style={{
+              maxHeight: "80vh",
+              height: "calc(80vh - 46px)",
+              overflow: "auto",
+            }}
+          >
+            {activeTab === "Search" && (
+              <>
+                {isSearchLoading && <Loader />}
+                <ul className="flex flexCol p15px">
+                  {!fetchMoviesError &&
+                    !isSearchLoading &&
+                    fetchedMovies.length > 0 &&
+                    fetchedMovies.map((m) => (
+                      <Movie
+                        title={m.Title}
+                        year={m.Year}
+                        key={m.imdbID}
+                        poster={m.Poster}
+                        selectMovieHandler={selectMovieHandler}
+                        id={m.imdbID}
+                      />
+                    ))}
 
-                {fetchMoviesError && fetchMoviesError}
-              </ul>
-            </>
-          )}
-          {activeTab === "List" && (
-            <>
-              {/* {isSearchLoading && <Loader />} */}
-              <ul className="flex flexCol p15px">
-                {myMovies &&
-                  myMovies.length > 0 &&
-                  myMovies.map((m) => (
-                    <Movie
-                      title={m.Title}
-                      year={m.Year}
-                      key={m.imdbID}
-                      poster={m.Poster}
-                      selectMovieHandler={selectMovieHandler}
-                      id={m.imdbID}
-                    />
-                  ))}
+                  {fetchMoviesError && fetchMoviesError}
+                </ul>
+              </>
+            )}
+            {activeTab === "List" && (
+              <>
+                {/* {isSearchLoading && <Loader />} */}
+                <ul className="flex flexCol p15px">
+                  {myMovies &&
+                    myMovies.length > 0 &&
+                    myMovies.map((m) => (
+                      <Movie
+                        title={m.Title}
+                        year={m.Year}
+                        key={m.imdbID}
+                        poster={m.Poster}
+                        selectMovieHandler={selectMovieHandler}
+                        id={m.imdbID}
+                      />
+                    ))}
 
-                {myMovies &&
-                  myMovies.length < 1 &&
-                  'Start adding movies to your list by click the "Add to list" on a movie you searched for.'}
-              </ul>
-            </>
-          )}
-        </SearchResults>
-        <SearchResults backgroundColor={"rgb(70, 67, 62)"}>
+                  {myMovies &&
+                    myMovies.length < 1 &&
+                    'Start adding movies to your list by click the "Add to list" on a movie you searched for.'}
+                </ul>
+              </>
+            )}
+          </SearchResults>
+        </div>
+        <SearchResults
+          backgroundColor={"rgb(70, 67, 62)"}
+          style={{
+            maxHeight: "80vh",
+            height: "80vh",
+            width: "50%",
+            overflow: "auto",
+          }}
+        >
           {isMovieDetailLoading && <Loader />}
           {!isMovieDetailLoading &&
             !fetchedMoviesDetailError &&
