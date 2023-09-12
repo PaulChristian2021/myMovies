@@ -1,19 +1,41 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import StarRating from "./StarRating/StarRating";
 import placeholderPoster from "../../../assets/poster-placeholder.png";
 
-export default function MovieDetails({ fetchedMoviesDetail }) {
+export default function MovieDetails({
+  fetchedMoviesDetail,
+  addMovieHandler,
+  removeMovieHandler,
+  myMovies,
+}) {
   console.log(
-    "props",
+    "MovieDetails props",
     fetchedMoviesDetail,
     fetchedMoviesDetail.Poster,
-    Object.keys(fetchedMoviesDetail)
+    Object.keys(fetchedMoviesDetail),
+    myMovies
   );
   const p = fetchedMoviesDetail;
+  const isMovieListed = myMovies.some(
+    (m) => m.imdbID === fetchedMoviesDetail.imdbID
+  );
+
+  const [starRate, setStarRate] = useState(0);
+
+  function addMovie() {
+    addMovieHandler({ ...fetchedMoviesDetail, userRating: starRate });
+  }
+  function removeMovie() {
+    console.log("removeMovie movie:", p);
+    removeMovieHandler(fetchedMoviesDetail.imdbID);
+    setStarRate(0);
+  }
 
   useEffect(() => {
-    document.title = p.Title || "myMovies";
-  }, [p.Title]);
+    if (isMovieListed && fetchedMoviesDetail.userRating) {
+      setStarRate(fetchedMoviesDetail.userRating);
+    }
+  }, [fetchedMoviesDetail.userRating]);
 
   return (
     <>
@@ -42,12 +64,14 @@ export default function MovieDetails({ fetchedMoviesDetail }) {
             margin: "15px",
           }}
         >
-          <StarRating />
+          <StarRating stars={starRate} setStars={setStarRate} />
+
           <button
-            className="pointer yellowBg white"
+            className={`pointer white ${isMovieListed ? "redBg" : "yellowBg"}`}
             style={{ borderRadius: "20px", padding: "5px", width: "80%" }}
+            onClick={isMovieListed ? removeMovie : addMovie}
           >
-            Add to list
+            {isMovieListed ? "Remove from list" : "Add to list"}
           </button>
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
@@ -63,31 +87,3 @@ export default function MovieDetails({ fetchedMoviesDetail }) {
     </>
   );
 }
-
-// [
-//   "Title",
-//   "Year",
-//   "Rated",
-//   "Released",
-//   "Runtime",
-//   "Genre",
-//   "Director",
-//   "Writer",
-//   "Actors",
-//   "Plot",
-//   "Language",
-//   "Country",
-//   "Awards",
-//   "Poster",
-//   "Ratings",
-//   "Metascore",
-//   "imdbRating",
-//   "imdbVotes",
-//   "imdbID",
-//   "Type",
-//   "DVD",
-//   "BoxOffice",
-//   "Production",
-//   "Website",
-//   "Response",
-// ];

@@ -5,18 +5,30 @@ import MovieDetails from "./components/MainSections/MovieDetails/MovieDetails";
 import Movie from "./components/MainSections/SearchResults/Movie/Movie";
 import SearchResults from "./components/MainSections/SearchResults/SearchResults";
 import Loader from "./components/Loader/Loader";
+import Tabs from "./components/MainSections/SearchResults/Tabs/Tabs";
 
 function App() {
   const [fetchedMovies, setFetchedMovies] = useState([]);
+  const [myMovies, setmyMovies] = useState([]);
   const [isSearchLoading, setisSearchLoading] = useState(false);
   const [isMovieDetailLoading, setisMovieDetailLoading] = useState(false);
   const [fetchMoviesError, setfetchMoviesError] = useState("");
 
+  const [selectedMovieID, setSelectedMovieID] = useState();
   const [fetchedMoviesDetail, setfetchedMoviesDetail] = useState("");
   const [fetchedMoviesDetailError, setfetchedMoviesDetailError] = useState("");
 
   const [title, setTitle] = useState("");
   const [year, setYear] = useState("");
+
+  const [activeTab, setactiveTab] = useState("Search");
+
+  const isSelectedMovieIDListed = myMovies.some(
+    (m) => m.imdbID === selectedMovieID
+  );
+  const listedMovieDetail = myMovies.filter(
+    (m) => m.imdbID === selectedMovieID
+  )[0];
 
   function titleInputHandler(e) {
     console.log("titleInputHandler", e);
@@ -25,18 +37,11 @@ function App() {
   function yearInputHandler(e) {
     console.log("yearInputHandler", e);
     setYear(e.target.value);
-    // if (e.target.value.length > 1 && title) searchMovies(title, e.target.value);
   }
-
-  useEffect(() => {
-    console.log("CALL API: Search Movies");
-    if (title.length > 1) searchMovies(title, year);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [title, year]);
 
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
-
+    setSelectedMovieID(imdbID);
     searchMovieDetail(imdbID);
   }
 
@@ -45,15 +50,22 @@ function App() {
     setfetchMoviesError("");
     setFetchedMovies([]);
     setisSearchLoading(true);
-    const res = await fetch(
-      `http://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
-    );
-    const data = await res.json();
-    console.log(data);
-    if (data.Response === "True") {
-      setFetchedMovies(data.Search);
-    } else {
-      setfetchMoviesError(data.Error);
+    let data;
+    try {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
+      );
+      data = await res.json();
+      console.log(data);
+      if (data.Response === "True") {
+        setFetchedMovies(data.Search);
+      } else {
+        setfetchMoviesError(data.Error);
+      }
+    } catch (error) {
+      console.log("Error caught:");
+      console.log(error);
+      setfetchMoviesError(`${error.name}: ${error.message}`);
     }
 
     setisSearchLoading(false);
@@ -80,6 +92,40 @@ function App() {
     setisMovieDetailLoading(false);
   }
 
+  function tabsClickHandler(tabName) {
+    console.log("tabsClickHandler", tabName);
+    setactiveTab(tabName);
+  }
+
+  function addMovieHandler(movie) {
+    // movie prop gotten from API + custom "userRating" from MovieDetails
+    console.log("addMovieHandler", movie);
+    // prevents adding an already listed movie
+    if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
+      return;
+    } else {
+      setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+    }
+  }
+  function removeMovieHandler(movieImdbID) {
+    // movie prop gotten from API + custom "userRating" from MovieDetails
+    console.log("removeMovieHandler", movieImdbID);
+    // prevents adding an already listed movie
+    // if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
+    //   return;
+    // } else {
+    //   setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+    // }
+    const list = myMovies.filter((movie) => movie.imdbID !== movieImdbID);
+    console.log("movie-filtered list", list);
+    setmyMovies(list);
+  }
+
+  useEffect(() => {
+    console.log("load localStorage movies:", localStorage.getItem("myMovies"));
+    const myMovies = JSON.parse(localStorage.getItem("myMovies"));
+    setmyMovies(myMovies ? myMovies : []);
+  }, []);
   useEffect(() => {
     // uses lastSearched__ texts for initial onload movies. If no movie result from lastSearched__, uses "movie" and current year as query
     const lastSearchedTitle = localStorage.getItem("lastSearchedTitle");
@@ -93,6 +139,20 @@ function App() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  useEffect(() => {
+    console.log("CALL API: Search Movies");
+    if (title.length > 1) searchMovies(title, year);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [title, year]);
+  useEffect(() => {
+    // Sets the browser tab title
+    if (activeTab === "List") document.title = "myMovies";
+    else if (activeTab !== "List" && fetchedMoviesDetail.Title)
+      document.title = fetchedMoviesDetail.Title;
+  }, [activeTab, fetchedMoviesDetail.Title]);
+  useEffect(() => {
+    localStorage.setItem("myMovies", JSON.stringify(myMovies));
+  }, [myMovies]);
 
   return (
     <div className="App darkBg p15px flex flexCol alignCenter">
@@ -101,33 +161,89 @@ function App() {
         yearInputHandler={yearInputHandler}
         fetchedMovies={fetchedMovies}
       />
-      {fetchedMovies && (
+      {fetchedMovies && activeTab === "Search" && (
         <div className="p15px_h" id="resultCount">
           Search results ({fetchedMovies.length})
         </div>
       )}
+      {activeTab === "List" && (
+        <div className="p15px_h" id="resultCount">
+          Your list ({myMovies.length})
+        </div>
+      )}
       <Main>
-        <SearchResults backgroundColor={"rgb(70, 67, 67)"}>
-          {isSearchLoading && <Loader />}
-          <ul className="flex flexCol p15px">
-            {!fetchMoviesError &&
-              !isSearchLoading &&
-              fetchedMovies.length > 0 &&
-              fetchedMovies.map((m) => (
-                <Movie
-                  title={m.Title}
-                  year={m.Year}
-                  key={m.imdbID}
-                  poster={m.Poster}
-                  selectMovieHandler={selectMovieHandler}
-                  id={m.imdbID}
-                />
-              ))}
+        <div style={{ maxHeight: "80vh", height: "80vh", width: "50%" }}>
+          <Tabs
+            className=" yellowBg noSelect "
+            tabsClassName="yellowBg pointer p15px white"
+            tabs={[{ name: "Search" }, { name: "List" }]}
+            clickHandler={tabsClickHandler}
+            activeTab={activeTab}
+          />
+          <SearchResults
+            backgroundColor={"rgb(70, 67, 67)"}
+            style={{
+              maxHeight: "80vh",
+              height: "calc(80vh - 46px)",
+              overflow: "auto",
+            }}
+          >
+            {activeTab === "Search" && (
+              <>
+                {isSearchLoading && <Loader />}
+                <ul className="flex flexCol p15px">
+                  {!fetchMoviesError &&
+                    !isSearchLoading &&
+                    fetchedMovies.length > 0 &&
+                    fetchedMovies.map((m) => (
+                      <Movie
+                        title={m.Title}
+                        year={m.Year}
+                        key={m.imdbID}
+                        poster={m.Poster}
+                        selectMovieHandler={selectMovieHandler}
+                        id={m.imdbID}
+                      />
+                    ))}
 
-            {fetchMoviesError && fetchMoviesError}
-          </ul>
-        </SearchResults>
-        <SearchResults backgroundColor={"rgb(70, 67, 62)"}>
+                  {fetchMoviesError && fetchMoviesError}
+                </ul>
+              </>
+            )}
+            {activeTab === "List" && (
+              <>
+                {/* {isSearchLoading && <Loader />} */}
+                <ul className="flex flexCol p15px">
+                  {myMovies &&
+                    myMovies.length > 0 &&
+                    myMovies.map((m) => (
+                      <Movie
+                        title={m.Title}
+                        year={m.Year}
+                        key={m.imdbID}
+                        poster={m.Poster}
+                        selectMovieHandler={selectMovieHandler}
+                        id={m.imdbID}
+                      />
+                    ))}
+
+                  {myMovies &&
+                    myMovies.length < 1 &&
+                    'Start adding movies to your list by click the "Add to list" on a movie you searched for.'}
+                </ul>
+              </>
+            )}
+          </SearchResults>
+        </div>
+        <SearchResults
+          backgroundColor={"rgb(70, 67, 62)"}
+          style={{
+            maxHeight: "80vh",
+            height: "80vh",
+            width: "50%",
+            overflow: "auto",
+          }}
+        >
           {isMovieDetailLoading && <Loader />}
           {!isMovieDetailLoading &&
             !fetchedMoviesDetailError &&
@@ -142,7 +258,16 @@ function App() {
           {!isMovieDetailLoading &&
             !fetchedMoviesDetailError &&
             fetchedMoviesDetail && (
-              <MovieDetails fetchedMoviesDetail={fetchedMoviesDetail} />
+              <MovieDetails
+                fetchedMoviesDetail={
+                  isSelectedMovieIDListed
+                    ? listedMovieDetail
+                    : fetchedMoviesDetail
+                }
+                addMovieHandler={addMovieHandler}
+                removeMovieHandler={removeMovieHandler}
+                myMovies={myMovies}
+              />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}
         </SearchResults>
@@ -161,7 +286,9 @@ function Header({ titleInputHandler, yearInputHandler }) {
           height: "45px",
         }}
       >
-        <h1 style={{ fontSize: "24px" }}>🎬 myMovies</h1>
+        <h1 className="noSelect" style={{ fontSize: "24px" }}>
+          🎬 myMovies
+        </h1>
         <form>
           <input
             className="p15px_h"

@@ -1,6 +1,9 @@
 .yellowBg {
   background-color: rgb(170, 170, 70);
 }
+.redBg {
+  background-color: rgb(170, 97, 70);
+}
 .white {
   color: white;
 }
