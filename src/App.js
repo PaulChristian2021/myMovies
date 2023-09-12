@@ -108,14 +108,7 @@ function App() {
     }
   }
   function removeMovieHandler(movieImdbID) {
-    // movie prop gotten from API + custom "userRating" from MovieDetails
     console.log("removeMovieHandler", movieImdbID);
-    // prevents adding an already listed movie
-    // if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
-    //   return;
-    // } else {
-    //   setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
-    // }
     const list = myMovies.filter((movie) => movie.imdbID !== movieImdbID);
     console.log("movie-filtered list", list);
     setmyMovies(list);

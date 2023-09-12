@@ -34,7 +34,13 @@ todo: update movie rating if listed - on click
 
 todo: dont call movie detail search api if movie to be selected is listed in localStorage
 
-todo: make some components reusable
+todo: make some more components reusable
+
+todo: decide how to show user's list sorting, filtering
+
+todo: easy add or remove from the movie list item (not having to go to details to perform an action)
+
+todo: mobile version (ideas: movie detail opens up like a modal, shrinking button click effect, ...)
 
 =========================
 
@@ -78,7 +84,7 @@ myMovies:
 User's list of movies
 /-localStorage user's movie list
 {
-movie details from API, userRating
+/movie details from API, userRating
 }
 -watched category
 -to watch category
