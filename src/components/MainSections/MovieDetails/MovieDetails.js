@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating/StarRating";
 import placeholderPoster from "../../../assets/poster-placeholder.png";
+import SmallButton from "../../SmallButton/SmallButton";
 
 export default function MovieDetails({
   fetchedMoviesDetail,
@@ -31,6 +32,10 @@ export default function MovieDetails({
     setStarRate(0);
   }
 
+  function closeDetail() {
+    console.log("closeDetail");
+  }
+
   useEffect(() => {
     if (isMovieListed && fetchedMoviesDetail.userRating) {
       setStarRate(fetchedMoviesDetail.userRating);
@@ -53,6 +58,11 @@ export default function MovieDetails({
           <div>{p.Released}</div>
           <div>{p.Genre}</div>
           <div>⭐{p.imdbRating} IMDb rating</div>
+        </div>
+        <div>
+          <SmallButton className="grayBg pointer" onClick={closeDetail}>
+            &times;
+          </SmallButton>
         </div>
       </div>
       <div className="p15px">

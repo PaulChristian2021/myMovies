@@ -42,6 +42,10 @@ todo: easy add or remove from the movie list item (not having to go to details t
 
 todo: mobile version (ideas: movie detail opens up like a modal, shrinking button click effect, ...)
 
+todo: close button on movie detail
+
+todo: reset search
+
 =========================
 
 <!-- todo: change page tab logo -->
