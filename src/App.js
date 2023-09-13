@@ -301,6 +301,15 @@ function Header({ titleInputHandler, yearInputHandler }) {
   useEffect(() => {
     titleInput.current.focus();
   }, []);
+  useEffect(() => {
+    document.addEventListener("keydown", (e) => {
+      if (e.code === "Enter" || e.code === "NumpadEnter") {
+        if (document.activeElement !== titleInput) {
+          titleInput.current.focus();
+        }
+      }
+    });
+  }, []);
 
   return (
     <div className="p15px ">

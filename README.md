@@ -11,6 +11,7 @@
 - shows a placeholder image for movie posters not available/missing
 - uses localStorage to store the user's movies list
 - CRUD operations
+- autofocus on the title input upon load and when pressing Enter
 
 =========================
 
