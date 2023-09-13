@@ -20,8 +20,11 @@ myMovies:
 User's list of movies
 /-localStorage user's movie list
 /{...movie details from API, userRating}
+
 -watched category
 -to watch category
+-uncategorized list
+
 /-add C: add movie
 /-update U: update movie rating
 /-deletion D: remove movie from list
