@@ -42,7 +42,14 @@ function App() {
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
     setSelectedMovieID(imdbID);
-    searchMovieDetail(imdbID);
+    if (myMovies.some((m) => m.imdbID === imdbID)) {
+      console.log("Using movie details from myMovies in localStorage...");
+      const movieDetail = myMovies.filter((m) => m.imdbID === imdbID);
+      console.log(movieDetail[0]);
+      setfetchedMoviesDetail(movieDetail[0]);
+    } else {
+      searchMovieDetail(imdbID);
+    }
   }
 
   async function searchMovies(title, year) {

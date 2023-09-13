@@ -34,10 +34,11 @@ export default function MovieDetails({
   }
 
   useEffect(() => {
+    console.log("Moviedetail rating useEffect", fetchedMoviesDetail);
     if (isMovieListed && fetchedMoviesDetail.userRating) {
       setStarRate(fetchedMoviesDetail.userRating);
     }
-  }, [isMovieListed, fetchedMoviesDetail.userRating]);
+  }, [isMovieListed, fetchedMoviesDetail, fetchedMoviesDetail.userRating]);
 
   return (
     <>

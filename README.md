@@ -33,16 +33,13 @@ List of movies search
 
 =========================
 
-display
-todo : revert title when not viewing movie
-
 choices
 todo : results pages
 
 performance
-todo : separately call the poster
+todo : separately call the poster (optional, if site slow)
 
-todo: create user's movie list (watched, to watch, )
+todo: create user's movie list (watched, to watch, uncategorized)
 
 todo: use react router
 
@@ -73,7 +70,7 @@ todo: prevent duplicate item in list
 todo: reflect user's rating of a movie
 todo: make the tabs stay on screen when scrolling down
 todo: close button on movie detail
-
+todo : revert title when not viewing movie
 =========================
 
 Redux
