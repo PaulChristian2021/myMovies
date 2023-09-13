@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "./App.css";
 
 import MovieDetails from "./components/MainSections/MovieDetails/MovieDetails";
@@ -296,6 +296,12 @@ function App() {
 }
 
 function Header({ titleInputHandler, yearInputHandler }) {
+  const titleInput = useRef(null);
+
+  useEffect(() => {
+    titleInput.current.focus();
+  }, []);
+
   return (
     <div className="p15px ">
       <header
@@ -309,6 +315,7 @@ function Header({ titleInputHandler, yearInputHandler }) {
         </h1>
         <form>
           <input
+            ref={titleInput}
             className="p15px_h"
             style={{
               height: "25px",
