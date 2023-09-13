@@ -48,10 +48,6 @@ todo: translations feasibility analysis
 todo: reflect in the search's movie detail if a movie exist in user list (maybe a tag or starRating)
 -currently shows red button for removal and userRating if not 0
 
-todo: update movie rating if listed - on click
-
-todo: dont call movie detail search api if movie to be selected is listed in localStorage
-
 todo: make some more components reusable
 
 todo: decide how to show user's list sorting, filtering
@@ -70,7 +66,9 @@ todo: prevent duplicate item in list
 todo: reflect user's rating of a movie
 todo: make the tabs stay on screen when scrolling down
 todo: close button on movie detail
-todo : revert title when not viewing movie
+todo: revert title when not viewing movie
+todo: dont call movie detail search api if movie to be selected is listed in localStorage
+todo: update movie rating if listed - on click
 =========================
 
 Redux

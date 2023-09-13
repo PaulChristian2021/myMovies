@@ -1,6 +1,7 @@
-export default function StarRating({ stars, setStars }) {
+export default function StarRating({ stars, setStars, ratingHandler }) {
   function clickHandler(index) {
     setStars(index + 1);
+    ratingHandler(index + 1);
   }
 
   return (

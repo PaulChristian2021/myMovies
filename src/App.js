@@ -130,6 +130,10 @@ function App() {
     console.log("movie-filtered list", list);
     setmyMovies(list);
   }
+  function updateRating(rating) {
+    const movieIndex = myMovies.findIndex((m) => m.imdbID === selectedMovieID);
+    myMovies[movieIndex].userRating = rating;
+  }
 
   useEffect(() => {
     console.log("load localStorage movies:", localStorage.getItem("myMovies"));
@@ -280,6 +284,7 @@ function App() {
                 removeMovieHandler={removeMovieHandler}
                 myMovies={myMovies}
                 closeMovieDetail={closeMovieDetail}
+                updateRating={updateRating}
               />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}

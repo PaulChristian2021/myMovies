@@ -9,6 +9,7 @@ export default function MovieDetails({
   removeMovieHandler,
   myMovies,
   closeMovieDetail,
+  updateRating,
 }) {
   console.log(
     "MovieDetails props",
@@ -32,11 +33,22 @@ export default function MovieDetails({
     removeMovieHandler(fetchedMoviesDetail.imdbID);
     setStarRate(0);
   }
+  function updateRatingHandler(rating) {
+    // prevents error when rating an unlisted movie in the search
+    // rating the unlisted movie disappears if "Add to list" is not clicked
+    if (isMovieListed) {
+      updateRating(rating);
+    }
+  }
 
   useEffect(() => {
     console.log("Moviedetail rating useEffect", fetchedMoviesDetail);
-    if (isMovieListed && fetchedMoviesDetail.userRating) {
-      setStarRate(fetchedMoviesDetail.userRating);
+    if (isMovieListed) {
+      if (fetchedMoviesDetail.userRating) {
+        setStarRate(fetchedMoviesDetail.userRating);
+      } else {
+        setStarRate(0);
+      }
     }
   }, [isMovieListed, fetchedMoviesDetail, fetchedMoviesDetail.userRating]);
 
@@ -72,7 +84,11 @@ export default function MovieDetails({
             margin: "15px",
           }}
         >
-          <StarRating stars={starRate} setStars={setStarRate} />
+          <StarRating
+            stars={starRate}
+            setStars={setStarRate}
+            ratingHandler={updateRatingHandler}
+          />
 
           <button
             className={`pointer white ${isMovieListed ? "redBg" : "yellowBg"}`}
