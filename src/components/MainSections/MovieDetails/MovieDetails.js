@@ -8,6 +8,7 @@ export default function MovieDetails({
   addMovieHandler,
   removeMovieHandler,
   myMovies,
+  closeMovieDetail,
 }) {
   console.log(
     "MovieDetails props",
@@ -30,10 +31,6 @@ export default function MovieDetails({
     console.log("removeMovie movie:", p);
     removeMovieHandler(fetchedMoviesDetail.imdbID);
     setStarRate(0);
-  }
-
-  function closeDetail() {
-    console.log("closeDetail");
   }
 
   useEffect(() => {
@@ -60,7 +57,7 @@ export default function MovieDetails({
           <div>⭐{p.imdbRating} IMDb rating</div>
         </div>
         <div>
-          <SmallButton className="grayBg pointer" onClick={closeDetail}>
+          <SmallButton className="grayBg pointer" onClick={closeMovieDetail}>
             &times;
           </SmallButton>
         </div>

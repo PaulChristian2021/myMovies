@@ -63,7 +63,7 @@ function App() {
         setfetchMoviesError(data.Error);
       }
     } catch (error) {
-      console.log("Error caught:");
+      console.log("Error caught when searching for movies:");
       console.log(error);
       setfetchMoviesError(`${error.name}: ${error.message}`);
     }
@@ -78,18 +78,28 @@ function App() {
   async function searchMovieDetail(imdbID) {
     setfetchedMoviesDetailError("");
     setisMovieDetailLoading(true);
-    const res = await fetch(
-      `https://www.omdbapi.com/?i=${imdbID}&apikey=44876fda&plot=full`
-    );
-    const data = await res.json();
-    console.log(data);
-    if (data.Response === "True") {
-      setfetchedMoviesDetail(data);
-    } else {
-      setfetchedMoviesDetailError(data.Error);
+
+    try {
+      const res = await fetch(
+        `https://www.omdbapi.com/?i=${imdbID}&apikey=44876fda&plot=full`
+      );
+      const data = await res.json();
+      console.log(data);
+      if (data.Response === "True") {
+        setfetchedMoviesDetail(data);
+      } else {
+        setfetchedMoviesDetailError(data.Error);
+      }
+    } catch (error) {
+      console.log("Error caught when fetching movie detail:");
+      console.log(error);
+      setfetchedMoviesDetailError(`${error.name}: ${error.message}`);
     }
 
     setisMovieDetailLoading(false);
+  }
+  function closeMovieDetail() {
+    setfetchedMoviesDetail("");
   }
 
   function tabsClickHandler(tabName) {
@@ -260,6 +270,7 @@ function App() {
                 addMovieHandler={addMovieHandler}
                 removeMovieHandler={removeMovieHandler}
                 myMovies={myMovies}
+                closeMovieDetail={closeMovieDetail}
               />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}
