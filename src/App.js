@@ -149,9 +149,11 @@ function App() {
   }, [title, year]);
   useEffect(() => {
     // Sets the browser tab title
-    if (activeTab === "List") document.title = "myMovies";
-    else if (activeTab !== "List" && fetchedMoviesDetail.Title)
+    if (fetchedMoviesDetail.Title) {
       document.title = fetchedMoviesDetail.Title;
+    } else {
+      document.title = "myMovies";
+    }
   }, [activeTab, fetchedMoviesDetail.Title]);
   useEffect(() => {
     localStorage.setItem("myMovies", JSON.stringify(myMovies));

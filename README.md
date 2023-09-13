@@ -12,6 +12,24 @@
 - uses localStorage to store the user's movies list
 - CRUD operations
 
+=========================
+
+myMovies:
+/Search for movies
+/see movie detail
+User's list of movies
+/-localStorage user's movie list
+/{...movie details from API, userRating}
+-watched category
+-to watch category
+/-add C: add movie
+/-update U: update movie rating
+/-deletion D: remove movie from list
+List of movies sorting
+List of movies search
+
+=========================
+
 display
 todo : revert title when not viewing movie
 
@@ -42,17 +60,16 @@ todo: easy add or remove from the movie list item (not having to go to details t
 
 todo: mobile version (ideas: movie detail opens up like a modal, shrinking button click effect, ...)
 
-todo: close button on movie detail
-
 todo: reset search
 
 =========================
-
-<!-- todo: change page tab logo -->
-<!-- todo: make the add-to-list functional -->
-<!-- todo: prevent duplicate item in list -->
-<!-- todo: reflect user's rating of a movie -->
-<!-- todo: make the tabs stay on screen when scrolling down -->
+Done
+todo: change page tab logo -->
+todo: make the add-to-list functional
+todo: prevent duplicate item in list
+todo: reflect user's rating of a movie
+todo: make the tabs stay on screen when scrolling down
+todo: close button on movie detail
 
 =========================
 
@@ -79,23 +96,3 @@ Error handling (Try catch, etc)
 Documentation
 Consistent design
 Best practices
-
-=========================
-
-myMovies:
-/Search for movies
-/see movie detail
-User's list of movies
-/-localStorage user's movie list
-{
-/movie details from API, userRating
-}
--watched category
--to watch category
-/-add C: add movie
-/-update U: update movie rating
-/-deletion D: remove movie from list
-List of movies sorting
-List of movies search
-
-.
