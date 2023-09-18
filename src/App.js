@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useReducer } from "react";
 import "./App.css";
 
 import Header from "./components/Header/Header";
@@ -9,22 +9,70 @@ import Loader from "./components/Loader/Loader";
 import Tabs from "./components/MainSections/SearchResults/Tabs/Tabs";
 import Footer from "./components/Footer/Footer";
 
+const initialState = {
+  fetchedMovies: [],
+  myMovies: [],
+  isSearchLoading: false,
+  isMovieDetailLoading: false,
+  fetchMoviesError: "",
+  fetchedMoviesDetail: "",
+  fetchedMoviesDetailError: "",
+  selectedMovieID: "",
+  title: "",
+  year: "",
+  activeTab: "Search",
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "setisSearchLoading":
+      return { ...state, isSearchLoading: action.payload };
+    case "setFetchedMovies":
+      return { ...state, fetchedMovies: action.payload };
+    case "setfetchMoviesError":
+      return { ...state, fetchMoviesError: action.payload };
+    case "addToMyMovies":
+      return { ...state, myMovies: [...state.myMovies, action.payload] };
+    case "setMyMovies":
+      return { ...state, myMovies: action.payload };
+    case "setSelectedMovieID":
+      return { ...state, selectedMovieID: action.payload };
+    case "setisMovieDetailLoading":
+      return { ...state, isMovieDetailLoading: action.payload };
+    case "setfetchedMoviesDetail":
+      return { ...state, fetchedMoviesDetail: action.payload };
+    case "setfetchedMoviesDetailError":
+      return { ...state, fetchedMoviesDetailError: action.payload };
+    case "changeTitleInput":
+      return { ...state, title: action.payload };
+    case "changeYearInput":
+      return { ...state, year: action.payload };
+
+    case "setActiveTab":
+      return { ...state, activeTab: action.payload };
+    default:
+      throw new Error("Reducer error");
+  }
+}
+
 function App() {
-  const [fetchedMovies, setFetchedMovies] = useState([]);
-  const [myMovies, setmyMovies] = useState([]);
-  const [isSearchLoading, setisSearchLoading] = useState(false);
-  const [isMovieDetailLoading, setisMovieDetailLoading] = useState(false);
-  const [fetchMoviesError, setfetchMoviesError] = useState("");
-
-  const [selectedMovieID, setSelectedMovieID] = useState();
-  const [fetchedMoviesDetail, setfetchedMoviesDetail] = useState("");
-  const [fetchedMoviesDetailError, setfetchedMoviesDetailError] = useState("");
-
-  const [title, setTitle] = useState("");
-  const [year, setYear] = useState("");
-
-  const [activeTab, setactiveTab] = useState("Search");
-
+  const [
+    {
+      fetchedMovies,
+      myMovies,
+      isSearchLoading,
+      isMovieDetailLoading,
+      fetchMoviesError,
+      selectedMovieID,
+      fetchedMoviesDetail,
+      fetchedMoviesDetailError,
+      title,
+      year,
+      activeTab,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
+  console.log("myMovies", myMovies);
   const isSelectedMovieIDListed = myMovies.some(
     (m) => m.imdbID === selectedMovieID
   );
@@ -34,21 +82,25 @@ function App() {
 
   function titleInputHandler(e) {
     console.log("titleInputHandler", e);
-    setTitle(e.target.value);
+    // setTitle(e.target.value);
+    dispatch({ type: "changeTitleInput", payload: e.target.value });
   }
   function yearInputHandler(e) {
     console.log("yearInputHandler", e);
-    setYear(e.target.value);
+    // setYear(e.target.value);
+    dispatch({ type: "changeYearInput", payload: e.target.value });
   }
 
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
-    setSelectedMovieID(imdbID);
+    // setSelectedMovieID(imdbID);
+    dispatch({ type: "setSelectedMovieID", payload: imdbID });
     if (myMovies.some((m) => m.imdbID === imdbID)) {
       console.log("Using movie details from myMovies in localStorage...");
       const movieDetail = myMovies.filter((m) => m.imdbID === imdbID);
       console.log(movieDetail[0]);
-      setfetchedMoviesDetail(movieDetail[0]);
+      // setfetchedMoviesDetail(movieDetail[0]);
+      dispatch({ type: "setfetchedMoviesDetail", payload: movieDetail[0] });
     } else {
       searchMovieDetail(imdbID);
     }
@@ -56,9 +108,15 @@ function App() {
 
   async function searchMovies(title, year) {
     console.log("searchMovies", title, year);
-    setfetchMoviesError("");
-    setFetchedMovies([]);
-    setisSearchLoading(true);
+    // setfetchMoviesError("");
+    dispatch({
+      type: "setfetchMoviesError",
+      payload: "",
+    });
+    // setFetchedMovies([]);
+    dispatch({ type: "setFetchedMovies", payload: [] });
+    // setisSearchLoading(true);
+    dispatch({ type: "setisSearchLoading", payload: true });
     // let data;
     try {
       const res = await fetch(
@@ -67,17 +125,27 @@ function App() {
       const data = await res.json();
       console.log(data);
       if (data.Response === "True") {
-        setFetchedMovies(data.Search);
+        // setFetchedMovies(data.Search);
+        dispatch({ type: "setFetchedMovies", payload: data.Search });
       } else {
-        setfetchMoviesError(data.Error);
+        // setfetchMoviesError(data.Error);
+        dispatch({
+          type: "setfetchMoviesError",
+          payload: data.Error,
+        });
       }
     } catch (error) {
       console.log("Error caught when searching for movies:");
       console.log(error);
-      setfetchMoviesError(`${error.name}: ${error.message}`);
+      // setfetchMoviesError(`${error.name}: ${error.message}`);
+      dispatch({
+        type: "setfetchMoviesError",
+        payload: `${error.name}: ${error.message}`,
+      });
     }
 
-    setisSearchLoading(false);
+    // setisSearchLoading(false);
+    dispatch({ type: "setisSearchLoading", payload: false });
 
     // Sets the lastSearched__ so everytime the app loads, the last searched texts are used
     localStorage.setItem("lastSearchedTitle", title);
@@ -85,8 +153,13 @@ function App() {
     localStorage.setItem("lastSearchMovieCount", fetchedMovies.length);
   }
   async function searchMovieDetail(imdbID) {
-    setfetchedMoviesDetailError("");
-    setisMovieDetailLoading(true);
+    // setfetchedMoviesDetailError("");
+    dispatch({
+      type: "setfetchedMoviesDetailError",
+      payload: "",
+    });
+    // setisMovieDetailLoading(true);
+    dispatch({ type: "setisMovieDetailLoading", payload: true });
 
     try {
       const res = await fetch(
@@ -95,25 +168,37 @@ function App() {
       const data = await res.json();
       console.log(data);
       if (data.Response === "True") {
-        setfetchedMoviesDetail(data);
+        // setfetchedMoviesDetail(data);
+        dispatch({ type: "setfetchedMoviesDetail", payload: data });
       } else {
-        setfetchedMoviesDetailError(data.Error);
+        // setfetchedMoviesDetailError(data.Error);
+        dispatch({
+          type: "setfetchedMoviesDetailError",
+          payload: data.Error,
+        });
       }
     } catch (error) {
       console.log("Error caught when fetching movie detail:");
       console.log(error);
-      setfetchedMoviesDetailError(`${error.name}: ${error.message}`);
+      // setfetchedMoviesDetailError(`${error.name}: ${error.message}`);
+      dispatch({
+        type: "setfetchedMoviesDetailError",
+        payload: `${error.name}: ${error.message}`,
+      });
     }
 
-    setisMovieDetailLoading(false);
+    // setisMovieDetailLoading(false);
+    dispatch({ type: "setisMovieDetailLoading", payload: false });
   }
   function closeMovieDetail() {
-    setfetchedMoviesDetail("");
+    // setfetchedMoviesDetail("");
+    dispatch({ type: "setfetchedMoviesDetail", payload: "" });
   }
 
   function tabsClickHandler(tabName) {
     console.log("tabsClickHandler", tabName);
-    setactiveTab(tabName);
+    // setactiveTab(tabName);
+    dispatch({ type: "setActiveTab", payload: tabName });
   }
 
   function addMovieHandler(movie) {
@@ -123,14 +208,17 @@ function App() {
     if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
       return;
     } else {
-      setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+      // setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+
+      dispatch({ type: "addToMyMovies", payload: movie });
     }
   }
   function removeMovieHandler(movieImdbID) {
     console.log("removeMovieHandler", movieImdbID);
     const list = myMovies.filter((movie) => movie.imdbID !== movieImdbID);
     console.log("movie-filtered list", list);
-    setmyMovies(list);
+    // setmyMovies(list);
+    dispatch({ type: "setMyMovies", payload: list });
   }
   function updateRating(rating) {
     const movieIndex = myMovies.findIndex((m) => m.imdbID === selectedMovieID);
@@ -140,7 +228,10 @@ function App() {
   useEffect(() => {
     console.log("load localStorage movies:", localStorage.getItem("myMovies"));
     const myMovies = JSON.parse(localStorage.getItem("myMovies"));
-    setmyMovies(myMovies ? myMovies : []);
+    // setmyMovies(myMovies ? myMovies : []);
+    if (myMovies.length > 0) {
+      dispatch({ type: "setMyMovies", payload: myMovies ? myMovies : [] });
+    }
   }, []);
   useEffect(() => {
     // uses lastSearched__ texts for initial onload movies. If no movie result from lastSearched__, uses "movie" and current year as query

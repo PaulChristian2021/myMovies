@@ -26,6 +26,7 @@ export default function MovieDetails({
   const [starRate, setStarRate] = useState(0);
 
   function addMovie() {
+    console.log("addMovie movie:", p);
     addMovieHandler({ ...fetchedMoviesDetail, userRating: starRate });
   }
   function removeMovie() {
