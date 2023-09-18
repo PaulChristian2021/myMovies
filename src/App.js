@@ -1,11 +1,13 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
+import Header from "./components/Header/Header";
 import MovieDetails from "./components/MainSections/MovieDetails/MovieDetails";
 import Movie from "./components/MainSections/SearchResults/Movie/Movie";
 import SearchResults from "./components/MainSections/SearchResults/SearchResults";
 import Loader from "./components/Loader/Loader";
 import Tabs from "./components/MainSections/SearchResults/Tabs/Tabs";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [fetchedMovies, setFetchedMovies] = useState([]);
@@ -57,12 +59,12 @@ function App() {
     setfetchMoviesError("");
     setFetchedMovies([]);
     setisSearchLoading(true);
-    let data;
+    // let data;
     try {
       const res = await fetch(
         `https://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
       );
-      data = await res.json();
+      const data = await res.json();
       console.log(data);
       if (data.Response === "True") {
         setFetchedMovies(data.Search);
@@ -295,85 +297,9 @@ function App() {
   );
 }
 
-function Header({ titleInputHandler, yearInputHandler }) {
-  const titleInput = useRef(null);
-
-  useEffect(() => {
-    titleInput.current.focus();
-  }, []);
-  useEffect(() => {
-    document.addEventListener("keydown", (e) => {
-      if (e.code === "Enter" || e.code === "NumpadEnter") {
-        if (document.activeElement !== titleInput) {
-          titleInput.current.focus();
-        }
-      }
-    });
-  }, []);
-
-  return (
-    <div className="p15px ">
-      <header
-        className="flex justifyBetween alignCenter p15px_h yellowBg"
-        style={{
-          height: "45px",
-        }}
-      >
-        <h1 className="noSelect" style={{ fontSize: "24px" }}>
-          🎬 myMovies
-        </h1>
-        <form>
-          <input
-            ref={titleInput}
-            className="p15px_h"
-            style={{
-              height: "25px",
-              width: "300px",
-              backgroundColor: "rgb(230, 230, 120)",
-              border: "none",
-            }}
-            placeholder="Type the movie title here"
-            onChange={(e) => {
-              setTimeout(() => {
-                titleInputHandler(e);
-              }, [1000]);
-            }}
-            minLength={2}
-          />
-          <input
-            className="p15px_h"
-            style={{
-              height: "25px",
-              width: "70px",
-              backgroundColor: "rgb(230, 230, 120)",
-              border: "none",
-              marginLeft: "10px",
-            }}
-            placeholder="Year"
-            onChange={(e) => {
-              setTimeout(() => {
-                yearInputHandler(e);
-              }, [1000]);
-            }}
-            minLength={2}
-          />
-        </form>
-      </header>
-    </div>
-  );
-}
-
 function Main({ children }) {
   return (
     <div className="p15px flex justifyBetween alignCenter">{children}</div>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="p15px" style={{ textAlign: "center" }}>
-      Copyright © 2012 - 2023 myMovies®. All rights reserved.
-    </footer>
   );
 }
 

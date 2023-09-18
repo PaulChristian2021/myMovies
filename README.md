@@ -59,6 +59,8 @@ todo: mobile version (ideas: movie detail opens up like a modal, shrinking butto
 
 todo: reset search
 
+todo: add visual details to the movie list items and movie detail
+
 =========================
 Done
 todo: change page tab logo -->
@@ -83,6 +85,7 @@ Responsive/Mobile-friendly
 Performant
 CSS Library
 Reusable component
+custom hooks
 
 <!-- Children props -->
 
