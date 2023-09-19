@@ -6,11 +6,13 @@ import {
 import "./App.css";
 
 import Header from "./components/Header/Header";
+
+import Tabs from "./components/MainSections/Section/Tabs/Tabs";
+import Section from "./components/MainSections/Section/Section";
+import Movie from "./components/MainSections/Section/Movie/Movie";
 import MovieDetails from "./components/MainSections/MovieDetails/MovieDetails";
-import Movie from "./components/MainSections/SearchResults/Movie/Movie";
-import SearchResults from "./components/MainSections/SearchResults/SearchResults";
+
 import Loader from "./components/Loader/Loader";
-import Tabs from "./components/MainSections/SearchResults/Tabs/Tabs";
 import Footer from "./components/Footer/Footer";
 
 const initialState = {
@@ -270,7 +272,7 @@ function App() {
             clickHandler={tabsClickHandler}
             activeTab={activeTab}
           />
-          <SearchResults
+          <Section
             backgroundColor={"rgb(70, 67, 67)"}
             style={{
               maxHeight: "80vh",
@@ -322,9 +324,9 @@ function App() {
                 </ul>
               </>
             )}
-          </SearchResults>
+          </Section>
         </div>
-        <SearchResults
+        <Section
           backgroundColor={"rgb(70, 67, 62)"}
           style={{
             maxHeight: "80vh",
@@ -361,7 +363,7 @@ function App() {
               />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}
-        </SearchResults>
+        </Section>
       </Main>
       <Footer />
     </div>
