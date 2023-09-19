@@ -72,6 +72,8 @@ todo: close button on movie detail
 todo: revert title when not viewing movie
 todo: dont call movie detail search api if movie to be selected is listed in localStorage
 todo: update movie rating if listed - on click
+todo: migrate from useState to useReducer
+
 =========================
 
 Redux
@@ -93,7 +95,7 @@ custom hooks
 
 Error handling (Try catch, etc)
 -saerchMovies/
--searchMovie
+-searchMovie/
 
 Documentation
 Consistent design

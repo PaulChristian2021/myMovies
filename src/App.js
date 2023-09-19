@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer } from "react";
 import "./App.css";
 
 import Header from "./components/Header/Header";
@@ -56,6 +56,7 @@ function reducer(state, action) {
 }
 
 function App() {
+  // const MyMoviesContext = useContext();
   const [
     {
       fetchedMovies,
@@ -82,24 +83,20 @@ function App() {
 
   function titleInputHandler(e) {
     console.log("titleInputHandler", e);
-    // setTitle(e.target.value);
     dispatch({ type: "changeTitleInput", payload: e.target.value });
   }
   function yearInputHandler(e) {
     console.log("yearInputHandler", e);
-    // setYear(e.target.value);
     dispatch({ type: "changeYearInput", payload: e.target.value });
   }
 
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
-    // setSelectedMovieID(imdbID);
     dispatch({ type: "setSelectedMovieID", payload: imdbID });
     if (myMovies.some((m) => m.imdbID === imdbID)) {
       console.log("Using movie details from myMovies in localStorage...");
       const movieDetail = myMovies.filter((m) => m.imdbID === imdbID);
       console.log(movieDetail[0]);
-      // setfetchedMoviesDetail(movieDetail[0]);
       dispatch({ type: "setfetchedMoviesDetail", payload: movieDetail[0] });
     } else {
       searchMovieDetail(imdbID);
@@ -108,16 +105,12 @@ function App() {
 
   async function searchMovies(title, year) {
     console.log("searchMovies", title, year);
-    // setfetchMoviesError("");
     dispatch({
       type: "setfetchMoviesError",
       payload: "",
     });
-    // setFetchedMovies([]);
     dispatch({ type: "setFetchedMovies", payload: [] });
-    // setisSearchLoading(true);
     dispatch({ type: "setisSearchLoading", payload: true });
-    // let data;
     try {
       const res = await fetch(
         `https://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
@@ -125,10 +118,8 @@ function App() {
       const data = await res.json();
       console.log(data);
       if (data.Response === "True") {
-        // setFetchedMovies(data.Search);
         dispatch({ type: "setFetchedMovies", payload: data.Search });
       } else {
-        // setfetchMoviesError(data.Error);
         dispatch({
           type: "setfetchMoviesError",
           payload: data.Error,
@@ -137,14 +128,11 @@ function App() {
     } catch (error) {
       console.log("Error caught when searching for movies:");
       console.log(error);
-      // setfetchMoviesError(`${error.name}: ${error.message}`);
       dispatch({
         type: "setfetchMoviesError",
         payload: `${error.name}: ${error.message}`,
       });
     }
-
-    // setisSearchLoading(false);
     dispatch({ type: "setisSearchLoading", payload: false });
 
     // Sets the lastSearched__ so everytime the app loads, the last searched texts are used
@@ -153,12 +141,10 @@ function App() {
     localStorage.setItem("lastSearchMovieCount", fetchedMovies.length);
   }
   async function searchMovieDetail(imdbID) {
-    // setfetchedMoviesDetailError("");
     dispatch({
       type: "setfetchedMoviesDetailError",
       payload: "",
     });
-    // setisMovieDetailLoading(true);
     dispatch({ type: "setisMovieDetailLoading", payload: true });
 
     try {
@@ -168,10 +154,8 @@ function App() {
       const data = await res.json();
       console.log(data);
       if (data.Response === "True") {
-        // setfetchedMoviesDetail(data);
         dispatch({ type: "setfetchedMoviesDetail", payload: data });
       } else {
-        // setfetchedMoviesDetailError(data.Error);
         dispatch({
           type: "setfetchedMoviesDetailError",
           payload: data.Error,
@@ -180,24 +164,19 @@ function App() {
     } catch (error) {
       console.log("Error caught when fetching movie detail:");
       console.log(error);
-      // setfetchedMoviesDetailError(`${error.name}: ${error.message}`);
       dispatch({
         type: "setfetchedMoviesDetailError",
         payload: `${error.name}: ${error.message}`,
       });
     }
-
-    // setisMovieDetailLoading(false);
     dispatch({ type: "setisMovieDetailLoading", payload: false });
   }
   function closeMovieDetail() {
-    // setfetchedMoviesDetail("");
     dispatch({ type: "setfetchedMoviesDetail", payload: "" });
   }
 
   function tabsClickHandler(tabName) {
     console.log("tabsClickHandler", tabName);
-    // setactiveTab(tabName);
     dispatch({ type: "setActiveTab", payload: tabName });
   }
 
@@ -208,8 +187,6 @@ function App() {
     if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
       return;
     } else {
-      // setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
-
       dispatch({ type: "addToMyMovies", payload: movie });
     }
   }
@@ -217,7 +194,6 @@ function App() {
     console.log("removeMovieHandler", movieImdbID);
     const list = myMovies.filter((movie) => movie.imdbID !== movieImdbID);
     console.log("movie-filtered list", list);
-    // setmyMovies(list);
     dispatch({ type: "setMyMovies", payload: list });
   }
   function updateRating(rating) {
@@ -228,7 +204,6 @@ function App() {
   useEffect(() => {
     console.log("load localStorage movies:", localStorage.getItem("myMovies"));
     const myMovies = JSON.parse(localStorage.getItem("myMovies"));
-    // setmyMovies(myMovies ? myMovies : []);
     if (myMovies.length > 0) {
       dispatch({ type: "setMyMovies", payload: myMovies ? myMovies : [] });
     }
@@ -321,7 +296,6 @@ function App() {
             )}
             {activeTab === "List" && (
               <>
-                {/* {isSearchLoading && <Loader />} */}
                 <ul className="flex flexCol p15px">
                   {myMovies &&
                     myMovies.length > 0 &&
