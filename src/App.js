@@ -1,4 +1,8 @@
-import { useContext, useEffect, useReducer } from "react";
+import {
+  //  createContext,
+  useEffect,
+  useReducer,
+} from "react";
 import "./App.css";
 
 import Header from "./components/Header/Header";
@@ -55,8 +59,9 @@ function reducer(state, action) {
   }
 }
 
+// export const MyMoviesContext = createContext();
+
 function App() {
-  // const MyMoviesContext = useContext();
   const [
     {
       fetchedMovies,
@@ -239,6 +244,7 @@ function App() {
   }, [myMovies]);
 
   return (
+    // <MyMoviesContext.Provider value={myMovies}>
     <div className="App darkBg p15px flex flexCol alignCenter">
       <Header
         titleInputHandler={titleInputHandler}
@@ -359,6 +365,7 @@ function App() {
       </Main>
       <Footer />
     </div>
+    // </MyMoviesContext.Provider>
   );
 }
 

@@ -1,4 +1,9 @@
+// import { useContext } from "react";
+// import { MyMoviesContext } from "../../App";
+
 export default function SmallButton({ className, children, onClick }) {
+  // const myMovies = useContext(MyMoviesContext);
+  // console.log("asdf", myMovies);
   return (
     <button
       className={className}
