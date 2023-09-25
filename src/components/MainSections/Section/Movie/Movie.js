@@ -1,3 +1,5 @@
+import placeholderPoster from "../../../../assets/poster-placeholder.png";
+
 export default function Movie({ title, year, poster, selectMovieHandler, id }) {
   return (
     <li
@@ -10,7 +12,7 @@ export default function Movie({ title, year, poster, selectMovieHandler, id }) {
     >
       <div>
         <img
-          src={poster}
+          src={poster === "N/A" ? placeholderPoster : poster}
           alt="movie poster"
           style={{ width: "65px", height: "70px" }}
         />

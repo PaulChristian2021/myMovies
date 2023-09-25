@@ -1,8 +1,17 @@
 .yellowBg {
   background-color: rgb(170, 170, 70);
 }
+.redBg {
+  background-color: rgb(170, 97, 70);
+}
+.grayBg {
+  background-color: gray;
+}
 .white {
   color: white;
+}
+.yellow {
+  color: yellow;
 }
 
 .p15px {
@@ -21,7 +30,8 @@
   height: 100%;
   color: white;
 }
-.App > div {
+.App > div,
+#resultCount {
   width: 100%;
   max-width: 1000px;
 }
@@ -46,4 +56,7 @@
 .pointer:hover {
   cursor: pointer;
   filter: brightness(1.2);
+}
+.noSelect {
+  user-select: none;
 }
