@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import StarRating from "./StarRating/StarRating";
 import placeholderPoster from "../../../assets/poster-placeholder.png";
+import SmallButton from "../../SmallButton/SmallButton";
 
 export default function MovieDetails({
   fetchedMoviesDetail,
   addMovieHandler,
   removeMovieHandler,
   myMovies,
+  closeMovieDetail,
+  updateRating,
 }) {
   console.log(
     "MovieDetails props",
@@ -23,6 +26,7 @@ export default function MovieDetails({
   const [starRate, setStarRate] = useState(0);
 
   function addMovie() {
+    console.log("addMovie movie:", p);
     addMovieHandler({ ...fetchedMoviesDetail, userRating: starRate });
   }
   function removeMovie() {
@@ -30,12 +34,24 @@ export default function MovieDetails({
     removeMovieHandler(fetchedMoviesDetail.imdbID);
     setStarRate(0);
   }
+  function updateRatingHandler(rating) {
+    // prevents error when rating an unlisted movie in the search
+    // rating the unlisted movie disappears if "Add to list" is not clicked
+    if (isMovieListed) {
+      updateRating(rating);
+    }
+  }
 
   useEffect(() => {
-    if (isMovieListed && fetchedMoviesDetail.userRating) {
-      setStarRate(fetchedMoviesDetail.userRating);
+    console.log("Moviedetail rating useEffect", fetchedMoviesDetail);
+    if (isMovieListed) {
+      if (fetchedMoviesDetail.userRating) {
+        setStarRate(fetchedMoviesDetail.userRating);
+      } else {
+        setStarRate(0);
+      }
     }
-  }, [fetchedMoviesDetail.userRating]);
+  }, [isMovieListed, fetchedMoviesDetail, fetchedMoviesDetail.userRating]);
 
   return (
     <>
@@ -54,6 +70,11 @@ export default function MovieDetails({
           <div>{p.Genre}</div>
           <div>⭐{p.imdbRating} IMDb rating</div>
         </div>
+        <div>
+          <SmallButton className="grayBg pointer" onClick={closeMovieDetail}>
+            &times;
+          </SmallButton>
+        </div>
       </div>
       <div className="p15px">
         <div
@@ -64,7 +85,11 @@ export default function MovieDetails({
             margin: "15px",
           }}
         >
-          <StarRating stars={starRate} setStars={setStarRate} />
+          <StarRating
+            stars={starRate}
+            setStars={setStarRate}
+            ratingHandler={updateRatingHandler}
+          />
 
           <button
             className={`pointer white ${isMovieListed ? "redBg" : "yellowBg"}`}
@@ -75,13 +100,13 @@ export default function MovieDetails({
           </button>
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
-          {p.Plot}
+          Plot: {p.Plot}
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
-          Starring {p.Actors}
+          Starring: {p.Actors}
         </div>
         <div className="p15px_h" style={{ marginTop: "20px" }}>
-          Directed by {p.Director}
+          Directed by: {p.Director}
         </div>
       </div>
     </>

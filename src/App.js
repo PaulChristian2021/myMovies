@@ -1,28 +1,86 @@
-import { useEffect, useState } from "react";
+import {
+  //  createContext,
+  useEffect,
+  useReducer,
+} from "react";
 import "./App.css";
 
+import Header from "./components/Header/Header";
+
+import Tabs from "./components/MainSections/Section/Tabs/Tabs";
+import Section from "./components/MainSections/Section/Section";
+import Movie from "./components/MainSections/Section/Movie/Movie";
 import MovieDetails from "./components/MainSections/MovieDetails/MovieDetails";
-import Movie from "./components/MainSections/SearchResults/Movie/Movie";
-import SearchResults from "./components/MainSections/SearchResults/SearchResults";
+
 import Loader from "./components/Loader/Loader";
-import Tabs from "./components/MainSections/SearchResults/Tabs/Tabs";
+import Footer from "./components/Footer/Footer";
+
+const initialState = {
+  fetchedMovies: [],
+  myMovies: [],
+  isSearchLoading: false,
+  isMovieDetailLoading: false,
+  fetchMoviesError: "",
+  fetchedMoviesDetail: "",
+  fetchedMoviesDetailError: "",
+  selectedMovieID: "",
+  title: "",
+  year: "",
+  activeTab: "Search",
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "setisSearchLoading":
+      return { ...state, isSearchLoading: action.payload };
+    case "setFetchedMovies":
+      return { ...state, fetchedMovies: action.payload };
+    case "setfetchMoviesError":
+      return { ...state, fetchMoviesError: action.payload };
+    case "addToMyMovies":
+      return { ...state, myMovies: [...state.myMovies, action.payload] };
+    case "setMyMovies":
+      return { ...state, myMovies: action.payload };
+    case "setSelectedMovieID":
+      return { ...state, selectedMovieID: action.payload };
+    case "setisMovieDetailLoading":
+      return { ...state, isMovieDetailLoading: action.payload };
+    case "setfetchedMoviesDetail":
+      return { ...state, fetchedMoviesDetail: action.payload };
+    case "setfetchedMoviesDetailError":
+      return { ...state, fetchedMoviesDetailError: action.payload };
+    case "changeTitleInput":
+      return { ...state, title: action.payload };
+    case "changeYearInput":
+      return { ...state, year: action.payload };
+
+    case "setActiveTab":
+      return { ...state, activeTab: action.payload };
+    default:
+      throw new Error("Reducer error");
+  }
+}
+
+// export const MyMoviesContext = createContext();
 
 function App() {
-  const [fetchedMovies, setFetchedMovies] = useState([]);
-  const [myMovies, setmyMovies] = useState([]);
-  const [isSearchLoading, setisSearchLoading] = useState(false);
-  const [isMovieDetailLoading, setisMovieDetailLoading] = useState(false);
-  const [fetchMoviesError, setfetchMoviesError] = useState("");
-
-  const [selectedMovieID, setSelectedMovieID] = useState();
-  const [fetchedMoviesDetail, setfetchedMoviesDetail] = useState("");
-  const [fetchedMoviesDetailError, setfetchedMoviesDetailError] = useState("");
-
-  const [title, setTitle] = useState("");
-  const [year, setYear] = useState("");
-
-  const [activeTab, setactiveTab] = useState("Search");
-
+  const [
+    {
+      fetchedMovies,
+      myMovies,
+      isSearchLoading,
+      isMovieDetailLoading,
+      fetchMoviesError,
+      selectedMovieID,
+      fetchedMoviesDetail,
+      fetchedMoviesDetailError,
+      title,
+      year,
+      activeTab,
+    },
+    dispatch,
+  ] = useReducer(reducer, initialState);
+  console.log("myMovies", myMovies);
   const isSelectedMovieIDListed = myMovies.some(
     (m) => m.imdbID === selectedMovieID
   );
@@ -32,43 +90,57 @@ function App() {
 
   function titleInputHandler(e) {
     console.log("titleInputHandler", e);
-    setTitle(e.target.value);
+    dispatch({ type: "changeTitleInput", payload: e.target.value });
   }
   function yearInputHandler(e) {
     console.log("yearInputHandler", e);
-    setYear(e.target.value);
+    dispatch({ type: "changeYearInput", payload: e.target.value });
   }
 
   function selectMovieHandler(imdbID) {
     console.log(imdbID);
-    setSelectedMovieID(imdbID);
-    searchMovieDetail(imdbID);
+    dispatch({ type: "setSelectedMovieID", payload: imdbID });
+    if (myMovies.some((m) => m.imdbID === imdbID)) {
+      console.log("Using movie details from myMovies in localStorage...");
+      const movieDetail = myMovies.filter((m) => m.imdbID === imdbID);
+      console.log(movieDetail[0]);
+      dispatch({ type: "setfetchedMoviesDetail", payload: movieDetail[0] });
+    } else {
+      searchMovieDetail(imdbID);
+    }
   }
 
   async function searchMovies(title, year) {
     console.log("searchMovies", title, year);
-    setfetchMoviesError("");
-    setFetchedMovies([]);
-    setisSearchLoading(true);
-    let data;
+    dispatch({
+      type: "setfetchMoviesError",
+      payload: "",
+    });
+    dispatch({ type: "setFetchedMovies", payload: [] });
+    dispatch({ type: "setisSearchLoading", payload: true });
     try {
       const res = await fetch(
-        `http://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
+        `https://www.omdbapi.com/?apikey=44876fda&s=${title}&y=${year}`
       );
-      data = await res.json();
+      const data = await res.json();
       console.log(data);
       if (data.Response === "True") {
-        setFetchedMovies(data.Search);
+        dispatch({ type: "setFetchedMovies", payload: data.Search });
       } else {
-        setfetchMoviesError(data.Error);
+        dispatch({
+          type: "setfetchMoviesError",
+          payload: data.Error,
+        });
       }
     } catch (error) {
-      console.log("Error caught:");
+      console.log("Error caught when searching for movies:");
       console.log(error);
-      setfetchMoviesError(`${error.name}: ${error.message}`);
+      dispatch({
+        type: "setfetchMoviesError",
+        payload: `${error.name}: ${error.message}`,
+      });
     }
-
-    setisSearchLoading(false);
+    dispatch({ type: "setisSearchLoading", payload: false });
 
     // Sets the lastSearched__ so everytime the app loads, the last searched texts are used
     localStorage.setItem("lastSearchedTitle", title);
@@ -76,25 +148,43 @@ function App() {
     localStorage.setItem("lastSearchMovieCount", fetchedMovies.length);
   }
   async function searchMovieDetail(imdbID) {
-    setfetchedMoviesDetailError("");
-    setisMovieDetailLoading(true);
-    const res = await fetch(
-      `http://www.omdbapi.com/?i=${imdbID}&apikey=44876fda&plot=full`
-    );
-    const data = await res.json();
-    console.log(data);
-    if (data.Response === "True") {
-      setfetchedMoviesDetail(data);
-    } else {
-      setfetchedMoviesDetailError(data.Error);
-    }
+    dispatch({
+      type: "setfetchedMoviesDetailError",
+      payload: "",
+    });
+    dispatch({ type: "setisMovieDetailLoading", payload: true });
 
-    setisMovieDetailLoading(false);
+    try {
+      const res = await fetch(
+        `https://www.omdbapi.com/?i=${imdbID}&apikey=44876fda&plot=full`
+      );
+      const data = await res.json();
+      console.log(data);
+      if (data.Response === "True") {
+        dispatch({ type: "setfetchedMoviesDetail", payload: data });
+      } else {
+        dispatch({
+          type: "setfetchedMoviesDetailError",
+          payload: data.Error,
+        });
+      }
+    } catch (error) {
+      console.log("Error caught when fetching movie detail:");
+      console.log(error);
+      dispatch({
+        type: "setfetchedMoviesDetailError",
+        payload: `${error.name}: ${error.message}`,
+      });
+    }
+    dispatch({ type: "setisMovieDetailLoading", payload: false });
+  }
+  function closeMovieDetail() {
+    dispatch({ type: "setfetchedMoviesDetail", payload: "" });
   }
 
   function tabsClickHandler(tabName) {
     console.log("tabsClickHandler", tabName);
-    setactiveTab(tabName);
+    dispatch({ type: "setActiveTab", payload: tabName });
   }
 
   function addMovieHandler(movie) {
@@ -104,27 +194,26 @@ function App() {
     if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
       return;
     } else {
-      setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
+      dispatch({ type: "addToMyMovies", payload: movie });
     }
   }
   function removeMovieHandler(movieImdbID) {
-    // movie prop gotten from API + custom "userRating" from MovieDetails
     console.log("removeMovieHandler", movieImdbID);
-    // prevents adding an already listed movie
-    // if (myMovies.some((m) => m.imdbID === movie.imdbID)) {
-    //   return;
-    // } else {
-    //   setmyMovies((prevMyMovies) => [...prevMyMovies, movie]);
-    // }
     const list = myMovies.filter((movie) => movie.imdbID !== movieImdbID);
     console.log("movie-filtered list", list);
-    setmyMovies(list);
+    dispatch({ type: "setMyMovies", payload: list });
+  }
+  function updateRating(rating) {
+    const movieIndex = myMovies.findIndex((m) => m.imdbID === selectedMovieID);
+    myMovies[movieIndex].userRating = rating;
   }
 
   useEffect(() => {
     console.log("load localStorage movies:", localStorage.getItem("myMovies"));
     const myMovies = JSON.parse(localStorage.getItem("myMovies"));
-    setmyMovies(myMovies ? myMovies : []);
+    if (myMovies.length > 0) {
+      dispatch({ type: "setMyMovies", payload: myMovies ? myMovies : [] });
+    }
   }, []);
   useEffect(() => {
     // uses lastSearched__ texts for initial onload movies. If no movie result from lastSearched__, uses "movie" and current year as query
@@ -146,15 +235,18 @@ function App() {
   }, [title, year]);
   useEffect(() => {
     // Sets the browser tab title
-    if (activeTab === "List") document.title = "myMovies";
-    else if (activeTab !== "List" && fetchedMoviesDetail.Title)
+    if (fetchedMoviesDetail.Title) {
       document.title = fetchedMoviesDetail.Title;
+    } else {
+      document.title = "myMovies";
+    }
   }, [activeTab, fetchedMoviesDetail.Title]);
   useEffect(() => {
     localStorage.setItem("myMovies", JSON.stringify(myMovies));
   }, [myMovies]);
 
   return (
+    // <MyMoviesContext.Provider value={myMovies}>
     <div className="App darkBg p15px flex flexCol alignCenter">
       <Header
         titleInputHandler={titleInputHandler}
@@ -180,7 +272,7 @@ function App() {
             clickHandler={tabsClickHandler}
             activeTab={activeTab}
           />
-          <SearchResults
+          <Section
             backgroundColor={"rgb(70, 67, 67)"}
             style={{
               maxHeight: "80vh",
@@ -212,7 +304,6 @@ function App() {
             )}
             {activeTab === "List" && (
               <>
-                {/* {isSearchLoading && <Loader />} */}
                 <ul className="flex flexCol p15px">
                   {myMovies &&
                     myMovies.length > 0 &&
@@ -233,9 +324,9 @@ function App() {
                 </ul>
               </>
             )}
-          </SearchResults>
+          </Section>
         </div>
-        <SearchResults
+        <Section
           backgroundColor={"rgb(70, 67, 62)"}
           style={{
             maxHeight: "80vh",
@@ -267,79 +358,22 @@ function App() {
                 addMovieHandler={addMovieHandler}
                 removeMovieHandler={removeMovieHandler}
                 myMovies={myMovies}
+                closeMovieDetail={closeMovieDetail}
+                updateRating={updateRating}
               />
             )}
           {fetchedMoviesDetailError && fetchedMoviesDetailError}
-        </SearchResults>
+        </Section>
       </Main>
       <Footer />
     </div>
-  );
-}
-
-function Header({ titleInputHandler, yearInputHandler }) {
-  return (
-    <div className="p15px ">
-      <header
-        className="flex justifyBetween alignCenter p15px_h yellowBg"
-        style={{
-          height: "45px",
-        }}
-      >
-        <h1 className="noSelect" style={{ fontSize: "24px" }}>
-          🎬 myMovies
-        </h1>
-        <form>
-          <input
-            className="p15px_h"
-            style={{
-              height: "25px",
-              width: "300px",
-              backgroundColor: "rgb(230, 230, 120)",
-              border: "none",
-            }}
-            placeholder="Type the movie title here"
-            onChange={(e) => {
-              setTimeout(() => {
-                titleInputHandler(e);
-              }, [1000]);
-            }}
-            minLength={2}
-          />
-          <input
-            className="p15px_h"
-            style={{
-              height: "25px",
-              width: "70px",
-              backgroundColor: "rgb(230, 230, 120)",
-              border: "none",
-              marginLeft: "10px",
-            }}
-            placeholder="Year"
-            onChange={(e) => {
-              setTimeout(() => {
-                yearInputHandler(e);
-              }, [1000]);
-            }}
-            minLength={2}
-          />
-        </form>
-      </header>
-    </div>
+    // </MyMoviesContext.Provider>
   );
 }
 
 function Main({ children }) {
   return (
     <div className="p15px flex justifyBetween alignCenter">{children}</div>
-  );
-}
-
-function Footer() {
-  return (
-    <footer className="p15px" style={{ textAlign: "center" }}>
-      Copyright © 2012 - 2023 myMovies®. All rights reserved.
-    </footer>
   );
 }
 

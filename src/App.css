@@ -4,6 +4,9 @@
 .redBg {
   background-color: rgb(170, 97, 70);
 }
+.grayBg {
+  background-color: gray;
+}
 .white {
   color: white;
 }

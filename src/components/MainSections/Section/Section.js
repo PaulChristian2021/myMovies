@@ -1,4 +1,4 @@
-export default function SearchResults({ children, backgroundColor, style }) {
+export default function Section({ children, backgroundColor, style }) {
   return (
     <section
       style={{
